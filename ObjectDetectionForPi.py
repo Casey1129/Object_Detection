@@ -26,13 +26,13 @@ def getObject(img, draw=True, objects = []):
         for classId, confidence, box in zip(classIds.flatten(), confidence.flatten(), boundingBox):
             className = classNames[classId - 1]
             if className in objects:
-                objectInfo.append([box,className])
+                objectInfo.append([box,  className])
                 if (draw):
                     cv2.rectangle(img, box, color=(0, 255, 0), thickness=2)
                     cv2.putText(img, classNames[classId - 1], (box[0] + 10, box[1] + 30), cv2.FONT_HERSHEY_COMPLEX, 1,
                                 (0, 255, 0), 2)
 
-    return img
+    return img, objectInfo
 
 
 if __name__ == "__main__":
