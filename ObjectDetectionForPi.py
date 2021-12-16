@@ -2,6 +2,8 @@ import struct
 
 import cv2
 import serial
+import time
+import numpy as np
 
 ser = serial.Serial ("/dev/ttyAMA1", 115200)
 
@@ -26,7 +28,6 @@ def getObject(img, draw=True, objects = []):
     classIds, confidence, boundingBox = net.detect(img, confThreshold=threshold)
     if len(objects) == 0:
         objects = classNames
-    keypoints = []
     if len(classIds) != 0:
         for classId, confidence, box in zip(classIds.flatten(), confidence.flatten(), boundingBox):
             className = classNames[classId - 1]
@@ -50,9 +51,15 @@ if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
     cap.set(3, 1280)
     cap.set(4, 720)
-    #cap.set(10,70) #Brightness of the camera
+    value1 = float(0)
+    value2 = float(0)
     while True:
         success, img = cap.read()
+        ser.write(str.encode('!'))
+        ser.write(str.encode('!'))
+        time.sleep(0.03)
+        s = ser.read(100)
+        (n1, n2) = struct.unpack('ff', s)
         objectIdentified = getObject(img, objects=['person'])
         cv2.imshow("Output", img)
         cv2.waitKey(1)
